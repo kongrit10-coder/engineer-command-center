@@ -632,14 +632,16 @@ body{
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   transition:filter var(--ease);cursor:default;
   min-width:4px;
+  z-index:5;
+  box-shadow:0 1px 4px rgba(0,0,0,.35);
 }
-.ytl-bar:hover{filter:brightness(1.15)}
-.ytl-bar-task{height:14px;border-radius:4px}
+.ytl-bar:hover{filter:brightness(1.15);z-index:6}
+.ytl-bar-task{height:14px;border-radius:4px;z-index:5}
 
 /* Today line */
 .ytl-today-col{
   position:absolute;top:0;bottom:0;width:2px;
-  background:var(--accent);z-index:8;
+  background:var(--accent);z-index:3;
   pointer-events:none;
 }
 .ytl-today-col::before{
