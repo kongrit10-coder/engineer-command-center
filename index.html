@@ -912,6 +912,9 @@ a.sl{color:var(--accent);font-weight:600}
       <button class="nav-btn" id="snav-projects"  onclick="go('projects')"><i class="ti ti-folders"></i>Projects<span class="nav-badge" id="proj-count">0</span></button>
       <button class="nav-btn" id="snav-yeartl"    onclick="go('yeartl')"><i class="ti ti-calendar-month"></i>Year Timeline</button>
       <button class="nav-btn" id="snav-timeline"  onclick="go('timeline')"><i class="ti ti-chart-gantt"></i>Gantt View</button>
+      <div class="nav-group">ข้อมูลส่วนตัว</div>
+      <button class="nav-btn" id="snav-profile"   onclick="go('profile')"><i class="ti ti-id-badge-2"></i>โปรไฟล์ & หน้าที่</button>
+      <button class="nav-btn" id="snav-kpi"       onclick="go('kpi')"><i class="ti ti-target"></i>KPI & ตัววัดผล</button>
       <div class="nav-group">My Projects</div>
       <div id="sb-proj-list"></div>
     </div>
@@ -961,6 +964,9 @@ let S={
 function init(){
   const savedName=localStorage.getItem('ecc_brand_name');
   if(savedName){S.brandName=savedName;document.getElementById('brand-name').textContent=savedName}
+  const savedKPI=localStorage.getItem('ecc_kpi');
+  if(savedKPI){try{S.kpiData=JSON.parse(savedKPI)}catch(e){S.kpiData={}}}
+  else{S.kpiData={}}
   const url=localStorage.getItem('ecc_gas_url');
   const demo=localStorage.getItem('ecc_demo');
   if(url){S.gasUrl=url;showApp();syncData()}
@@ -1174,6 +1180,8 @@ function renderContent(){
   else if(S.view==='projects'){t.textContent='Projects';rProjects(c)}
   else if(S.view==='yeartl'){t.textContent='Year Timeline';rYearTimeline(c)}
   else if(S.view==='timeline'){t.textContent='Gantt View';rGantt(c)}
+  else if(S.view==='profile'){t.textContent='โปรไฟล์ & หน้าที่';rProfile(c)}
+  else if(S.view==='kpi'){t.textContent='KPI & ตัววัดผล';rKPI(c)}
   else if(S.view==='project-detail'){
     const p=S.projects.find(x=>x.id===S.activeProj);
     t.textContent=p?p.name:'Project';rDetail(c,p);
@@ -1634,6 +1642,304 @@ function rProjTimeline(p){
       </div>`;
     }).join('')}
   </div>`;
+}
+
+/* ════════════════════════════════════════════════
+   PROFILE PAGE
+════════════════════════════════════════════════ */
+function rProfile(c){
+  c.innerHTML=`
+<div style="max-width:860px">
+
+  <!-- Hero Card -->
+  <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;margin-bottom:16px;box-shadow:var(--sh2)">
+    <!-- gradient banner -->
+    <div style="height:90px;background:linear-gradient(120deg,#1e1b4b,#312e81,#4c1d95,#1e3a5f);position:relative">
+      <div style="position:absolute;inset:0;background:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2220%22 cy=%2220%22 r=%2240%22 fill=%22rgba(255,255,255,.04)%22/><circle cx=%2280%22 cy=%2280%22 r=%2250%22 fill=%22rgba(255,255,255,.03)%22/></svg>');opacity:.8"></div>
+    </div>
+    <div style="padding:0 24px 24px;position:relative">
+      <!-- Avatar -->
+      <div style="width:72px;height:72px;border-radius:50%;background:var(--accent-g);display:flex;align-items:center;justify-content:center;border:3px solid var(--bg-surface);position:absolute;top:-36px;box-shadow:0 4px 16px rgba(99,102,241,.5)">
+        <i class="ti ti-user" style="font-size:32px;color:#fff"></i>
+      </div>
+      <div style="padding-top:44px">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px">
+          <div>
+            <div style="font-size:20px;font-weight:700;color:var(--tx-1);letter-spacing:-.02em">นายคงฤทธิ์ จันทะสิงห์</div>
+            <div style="font-size:13px;color:var(--tx-3);margin-top:3px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+              <span style="display:flex;align-items:center;gap:5px"><i class="ti ti-id-badge-2" style="font-size:14px;color:var(--accent)"></i>รหัส 623011</span>
+              <span style="display:flex;align-items:center;gap:5px"><i class="ti ti-shield-half-filled" style="font-size:14px;color:var(--c-amber)"></i>รักษาการระดับ 65</span>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <span class="badge b-ongoing" style="font-size:12px;padding:5px 12px"><i class="ti ti-bolt" style="font-size:13px"></i>Active</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Responsibilities -->
+  <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--rl);padding:22px;margin-bottom:16px;box-shadow:var(--sh1)">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
+      <div style="width:36px;height:36px;border-radius:10px;background:var(--c-blue-l);display:flex;align-items:center;justify-content:center"><i class="ti ti-clipboard-list" style="font-size:18px;color:var(--c-blue)"></i></div>
+      <div>
+        <div style="font-size:15px;font-weight:700;color:var(--tx-1)">หน้าที่รับผิดชอบ</div>
+        <div style="font-size:11px;color:var(--tx-4)">Responsibilities</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      ${[
+        {icon:'ti-robot',color:'#6366F1',bg:'rgba(99,102,241,.15)',title:'เครื่องจักรในไลน์ Clean Zone',desc:'X-ray, Metal detector, CCM, Weighing, Auto weight, เครื่องจักร Line Packing ทั้งหมด — จัดแผน PM, ทำ WI, สำรองอะไหล่ Spare Part และแก้ไขเมื่อเครื่องเกิด Breakdown'},
+        {icon:'ti-users',color:'#22C55E',bg:'rgba(34,197,94,.15)',title:'พัฒนาทักษะทีมช่าง',desc:'พัฒนาทักษะเฉพาะทางของทีมงานช่าง ให้มีความสามารถและมาตรฐานในการทำงาน'},
+        {icon:'ti-search',color:'#F59E0B',bg:'rgba(245,158,11,.15)',title:'เปรียบเทียบสเปค & จัดหาเครื่องจักรใหม่',desc:'รับผิดชอบงานโปรเจคปรับปรุงต่างๆ เช่น การปรับปรุงระบบ Packing line ใหม่'},
+        {icon:'ti-headset',color:'#EF4444',bg:'rgba(239,68,68,.15)',title:'ตอบรับและแก้ไข Complain',desc:'รับผิดชอบงานตอบรับและแก้ไข Complain, Comment จากหมอ และ Auditor'},
+        {icon:'ti-package',color:'#2DD4BF',bg:'rgba(45,212,191,.15)',title:'ASRS Inbound CS3',desc:'ดูแลงานในส่วนของ ASRS Inbound CS3 จัดทีมงานและแก้ไขปัญหาให้ไม่ติดขัด'},
+      ].map((r,i)=>`
+        <div style="display:flex;gap:14px;align-items:flex-start;padding:14px;background:var(--bg-raised);border-radius:var(--r);border:1px solid var(--border)">
+          <div style="width:40px;height:40px;border-radius:10px;background:${r.bg};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <i class="ti ${r.icon}" style="font-size:20px;color:${r.color}"></i>
+          </div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:13px;font-weight:600;color:var(--tx-1);margin-bottom:4px">
+              <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:${r.bg};color:${r.color};border-radius:50%;font-size:11px;font-weight:700;margin-right:6px">${i+1}</span>${r.title}
+            </div>
+            <div style="font-size:12px;color:var(--tx-3);line-height:1.6">${r.desc}</div>
+          </div>
+        </div>`).join('')}
+    </div>
+  </div>
+
+  <!-- 2-col: Problems + Improvements -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+
+    <!-- Problems -->
+    <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--rl);padding:20px;box-shadow:var(--sh1)">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+        <div style="width:34px;height:34px;border-radius:9px;background:var(--c-red-l);display:flex;align-items:center;justify-content:center"><i class="ti ti-alert-triangle" style="font-size:17px;color:var(--c-red)"></i></div>
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--tx-1)">ปัญหาที่พบบ่อย</div>
+          <div style="font-size:10px;color:var(--tx-4)">Common Issues</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        ${[
+          {title:'สัดส่วนเครื่องจักร vs ทีมงาน',desc:'ปริมาณเครื่องจักรไม่สอดคล้องกับปริมาณทีมงานที่ต้องควบคุม Product ENG / Foreman'},
+          {title:'ทักษะไม่เท่ากัน',desc:'ทักษะของทีมงานแต่ละคนแตกต่างกัน ทั้งในด้านความละเอียดและความเรียบร้อยของงาน'},
+        ].map((p,i)=>`
+          <div style="padding:12px;background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.18);border-radius:var(--r);border-left:3px solid var(--c-red)">
+            <div style="font-size:12px;font-weight:600;color:#FCA5A5;margin-bottom:3px">${i+1}. ${p.title}</div>
+            <div style="font-size:11px;color:var(--tx-3);line-height:1.6">${p.desc}</div>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <!-- Improvements -->
+    <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--rl);padding:20px;box-shadow:var(--sh1)">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+        <div style="width:34px;height:34px;border-radius:9px;background:var(--c-green-l);display:flex;align-items:center;justify-content:center"><i class="ti ti-bulb" style="font-size:17px;color:var(--c-green)"></i></div>
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--tx-1)">สิ่งที่ต้องปรับเปลี่ยน</div>
+          <div style="font-size:10px;color:var(--tx-4)">Improvements</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        ${[
+          {icon:'ti-settings-cog',color:'#22C55E',title:'นำ CMMS มาช่วยจัดการ',desc:'ใช้ CMMS ช่วยในการ PM และจัดการอะไหล่ Spare Part ให้เหมาะสมและเป็นระบบ'},
+          {icon:'ti-book',color:'#6366F1',title:'จัดทำ SOP มาตรฐาน',desc:'ทำคู่มือการซ่อม SOP (Standard Operating Procedure) พร้อมวิดีโอและภาพประกอบที่ชัดเจน'},
+        ].map((imp,i)=>`
+          <div style="padding:12px;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.18);border-radius:var(--r);border-left:3px solid var(--c-green)">
+            <div style="display:flex;align-items:center;gap:7px;margin-bottom:3px">
+              <i class="ti ${imp.icon}" style="font-size:14px;color:#86EFAC"></i>
+              <span style="font-size:12px;font-weight:600;color:#86EFAC">${i+1}. ${imp.title}</span>
+            </div>
+            <div style="font-size:11px;color:var(--tx-3);line-height:1.6">${imp.desc}</div>
+          </div>`).join('')}
+      </div>
+    </div>
+
+  </div>
+</div>`;
+}
+
+/* ════════════════════════════════════════════════
+   KPI PAGE
+════════════════════════════════════════════════ */
+function rKPI(c){
+  // KPI config — progress values can be edited inline
+  const kpis=[
+    {
+      id:'kpi1',icon:'ti-clock-bolt',color:'#6366F1',bg:'rgba(99,102,241,.15)',
+      title:'Breakdown Time',unit:'ลดระยะเวลา BD',
+      targets:[
+        {label:'< 10 นาที',score:'ได้ 80%',target:80,achieved:S.kpiData?.bd10??0,color:'#22C55E'},
+        {label:'< 15 นาที',score:'ได้ 50%',target:50,achieved:S.kpiData?.bd15??0,color:'#F59E0B'},
+        {label:'> 15 นาที',score:'ได้ 0%',target:0,achieved:S.kpiData?.bd15p??0,color:'#EF4444'},
+      ],
+      note:'คิดตามเครื่องจักรที่รับผิดชอบ',
+    },
+    {
+      id:'kpi2',icon:'ti-coin',color:'#F59E0B',bg:'rgba(245,158,11,.15)',
+      title:'มูลค่าการปรับปรุงงานโปรเจค',unit:'บาท / ปี / คน',
+      target:720000,achieved:S.kpiData?.proj??0,
+      format:v=>v.toLocaleString('th-TH')+'฿',
+      note:'เป้าหมาย 720,000 บาท/ปี/คน',
+    },
+    {
+      id:'kpi3',icon:'ti-trending-down',color:'#2DD4BF',bg:'rgba(45,212,191,.15)',
+      title:'PB / ย่น ย่อ ยุบ',unit:'เรื่อง / เดือน',
+      target:2,achieved:S.kpiData?.pb??0,
+      format:v=>v+' เรื่อง',
+      note:'ปรับปรุงกระบวนการ 2 เรื่อง/เดือน',
+    },
+    {
+      id:'kpi4',icon:'ti-leaf',color:'#22C55E',bg:'rgba(34,197,94,.15)',
+      title:'ลดพลังงาน',unit:'หน่วย / ปี',
+      target:50000,achieved:S.kpiData?.energy??0,
+      format:v=>v.toLocaleString('th-TH')+' หน่วย',
+      note:'เป้าหมายลด 50,000 หน่วย/ปี',
+    },
+  ];
+
+  function pct(a,t){return t>0?Math.min(100,Math.round((a/t)*100)):0}
+
+  c.innerHTML=`
+<div style="max-width:860px">
+
+  <!-- Header -->
+  <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--rl);padding:20px 24px;margin-bottom:18px;box-shadow:var(--sh1);display:flex;align-items:center;gap:16px">
+    <div style="width:52px;height:52px;border-radius:14px;background:var(--accent-g);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(99,102,241,.4)">
+      <i class="ti ti-target" style="font-size:26px;color:#fff"></i>
+    </div>
+    <div>
+      <div style="font-size:17px;font-weight:700;color:var(--tx-1)">ตัววัดผลงาน (KPI)</div>
+      <div style="font-size:12px;color:var(--tx-3);margin-top:2px">นายคงฤทธิ์ จันทะสิงห์ · รหัส 623011 · รักษาการระดับ 65</div>
+    </div>
+    <div style="margin-left:auto">
+      <button class="btn btn-primary btn-sm" onclick="saveKPI()"><i class="ti ti-device-floppy"></i>บันทึก</button>
+    </div>
+  </div>
+
+  <!-- KPI 1: BD -->
+  <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--rl);padding:22px;margin-bottom:14px;box-shadow:var(--sh1)">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
+      <div style="width:38px;height:38px;border-radius:10px;background:rgba(99,102,241,.15);display:flex;align-items:center;justify-content:center"><i class="ti ti-clock-bolt" style="font-size:20px;color:#A5B4FC"></i></div>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:700;color:var(--tx-1)">KPI 1 — Breakdown Time</div>
+        <div style="font-size:11px;color:var(--tx-4)">คิดตามเครื่องจักรที่รับผิดชอบใน Clean Zone</div>
+      </div>
+      <span class="badge b-planning">เครื่องจักร</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px">
+      ${[
+        {key:'bd10',label:'BD < 10 นาที',scoreLabel:'เป้า 80%',target:80,color:'#22C55E',bg:'rgba(34,197,94,.1)',border:'rgba(34,197,94,.25)'},
+        {key:'bd15',label:'BD < 15 นาที',scoreLabel:'เป้า 50%',target:50,color:'#F59E0B',bg:'rgba(245,158,11,.1)',border:'rgba(245,158,11,.25)'},
+        {key:'bd15p',label:'BD > 15 นาที',scoreLabel:'เป้า 0%',target:0,color:'#EF4444',bg:'rgba(239,68,68,.1)',border:'rgba(239,68,68,.25)'},
+      ].map(bd=>{
+        const val=S.kpiData?.[bd.key]??0;
+        const p=bd.key==='bd15p'?100-Math.min(100,val):Math.min(100,val);
+        const fillColor=p>=bd.target?'#22C55E':p>=(bd.target*0.7)?'#F59E0B':'#EF4444';
+        return`<div style="background:${bd.bg};border:1px solid ${bd.border};border-radius:var(--r);padding:16px">
+          <div style="font-size:12px;font-weight:600;color:${bd.color};margin-bottom:8px">${bd.label}</div>
+          <div style="font-size:22px;font-weight:700;font-family:var(--mono);color:var(--tx-1);margin-bottom:2px">${val}%</div>
+          <div style="font-size:10px;color:var(--tx-4);margin-bottom:10px">${bd.scoreLabel}</div>
+          <div style="height:5px;background:var(--bg-overlay);border-radius:4px;overflow:hidden;margin-bottom:10px">
+            <div style="height:100%;width:${p}%;background:${fillColor};border-radius:4px;transition:width .5s"></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <input type="number" min="0" max="100" value="${val}" data-key="${bd.key}"
+              onchange="setKPI('${bd.key}',this.value)"
+              style="flex:1;padding:5px 8px;background:var(--bg-overlay);border:1px solid var(--border-md);border-radius:6px;color:var(--tx-1);font-size:12px;font-family:var(--mono)">
+            <span style="font-size:11px;color:var(--tx-4)">%</span>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>
+
+  <!-- KPI 2, 3, 4 -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+
+    <!-- KPI 2: Project value -->
+    ${kpiCard({
+      key:'proj',num:2,icon:'ti-coin',color:'#F59E0B',bg:'rgba(245,158,11,.1)',border:'rgba(245,158,11,.25)',
+      title:'มูลค่าการปรับปรุงโปรเจค',sub:'Target: 720,000 บาท/ปี/คน',
+      target:720000,unit:'บาท',step:10000,max:800000,
+      fmt:v=>parseInt(v).toLocaleString('th-TH')
+    })}
+
+    <!-- KPI 3: PB -->
+    ${kpiCard({
+      key:'pb',num:3,icon:'ti-trending-down',color:'#2DD4BF',bg:'rgba(45,212,191,.1)',border:'rgba(45,212,191,.25)',
+      title:'PB / ย่น ย่อ ยุบ',sub:'Target: 2 เรื่อง/เดือน',
+      target:2,unit:'เรื่อง',step:1,max:6,
+      fmt:v=>v
+    })}
+
+  </div>
+
+  <!-- KPI 4: Energy full width -->
+  <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--rl);padding:22px;box-shadow:var(--sh1)">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:38px;height:38px;border-radius:10px;background:rgba(34,197,94,.15);display:flex;align-items:center;justify-content:center"><i class="ti ti-leaf" style="font-size:20px;color:#86EFAC"></i></div>
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--tx-1)">KPI 4 — ลดการใช้พลังงาน</div>
+          <div style="font-size:11px;color:var(--tx-4)">เป้าหมายลด 50,000 หน่วย/ปี</div>
+        </div>
+      </div>
+      <div style="font-size:28px;font-weight:700;font-family:var(--mono);color:var(--tx-1)">${(S.kpiData?.energy??0).toLocaleString('th-TH')} <span style="font-size:14px;color:var(--tx-4)">/ 50,000 หน่วย</span></div>
+    </div>
+    <div style="height:18px;background:var(--bg-raised);border-radius:9px;overflow:hidden;margin-bottom:14px;position:relative">
+      <div style="position:absolute;inset:0;display:flex;align-items:center;padding:0 12px;z-index:2">
+        <span style="font-size:11px;font-weight:700;color:rgba(255,255,255,.9)">${pct(S.kpiData?.energy??0,50000)}%</span>
+      </div>
+      <div style="height:100%;width:${pct(S.kpiData?.energy??0,50000)}%;background:linear-gradient(90deg,#16A34A,#22C55E,#4ADE80);border-radius:9px;transition:width .6s ease"></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <label style="font-size:12px;color:var(--tx-3);flex-shrink:0">อัพเดตยอดประหยัด:</label>
+      <input type="number" min="0" max="50000" step="500" value="${S.kpiData?.energy??0}" onchange="setKPI('energy',this.value)"
+        style="flex:1;max-width:200px;padding:7px 12px;background:var(--bg-raised);border:1px solid var(--border-md);border-radius:var(--r);color:var(--tx-1);font-size:13px;font-family:var(--mono)">
+      <span style="font-size:12px;color:var(--tx-4)">หน่วย</span>
+    </div>
+  </div>
+
+</div>`;
+}
+
+function kpiCard({key,num,icon,color,bg,border,title,sub,target,unit,step,max,fmt}){
+  const val=S.kpiData?.[key]??0;
+  const p=Math.min(100,Math.round((val/target)*100));
+  const fillColor=p>=100?'#22C55E':p>=70?'#F59E0B':'#EF4444';
+  return`<div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--rl);padding:20px;box-shadow:var(--sh1)">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+      <div style="width:36px;height:36px;border-radius:9px;background:${bg};display:flex;align-items:center;justify-content:center"><i class="ti ${icon}" style="font-size:18px;color:${color}"></i></div>
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--tx-1)">KPI ${num} — ${title}</div>
+        <div style="font-size:10px;color:var(--tx-4)">${sub}</div>
+      </div>
+    </div>
+    <div style="font-size:26px;font-weight:700;font-family:var(--mono);color:var(--tx-1);margin-bottom:4px">${fmt(val)} <span style="font-size:12px;color:var(--tx-4)">${unit}</span></div>
+    <div style="font-size:11px;color:${fillColor};margin-bottom:10px;font-weight:600">${p}% of target</div>
+    <div style="height:8px;background:var(--bg-raised);border-radius:6px;overflow:hidden;margin-bottom:14px">
+      <div style="height:100%;width:${p}%;background:${fillColor};border-radius:6px;transition:width .5s ease"></div>
+    </div>
+    <input type="number" min="0" max="${max}" step="${step}" value="${val}" onchange="setKPI('${key}',this.value)"
+      style="width:100%;padding:8px 12px;background:var(--bg-raised);border:1px solid var(--border-md);border-radius:var(--r);color:var(--tx-1);font-size:13px;font-family:var(--mono)">
+  </div>`;
+}
+
+function setKPI(key,val){
+  if(!S.kpiData)S.kpiData={};
+  S.kpiData[key]=parseFloat(val)||0;
+  localStorage.setItem('ecc_kpi',JSON.stringify(S.kpiData));
+  // re-render only KPI page smoothly
+  if(S.view==='kpi')rKPI(document.getElementById('content'));
+}
+
+function saveKPI(){
+  localStorage.setItem('ecc_kpi',JSON.stringify(S.kpiData||{}));
+  toast('บันทึก KPI สำเร็จ','ok');
 }
 
 function emptyState(icon,title,sub){
